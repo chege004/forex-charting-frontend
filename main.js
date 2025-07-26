@@ -34,11 +34,11 @@ class ForexApp {
     
     async loadForexPairs() {
         try {
-            const response = await fetch('https://forex-charting-backend.onrender.com/api/forex/pairs');
+            const response = await fetch('https://forex-charting-backend-zl1y.onrender.com/api/forex/pairs');
             const data = await response.json();
             
             if (data.success) {
-                this.populatePairSelector(data.pairs);
+                this.populatePairSelector(data.data);
             }
         } catch (error) {
             console.error('Error loading forex pairs:', error);
@@ -79,8 +79,8 @@ class ForexApp {
     
     connect() {
         try {
-            // Replace with your actual Render backend URL
-            this.socket = io('https://forex-charting-backend.onrender.com');
+            // Using your actual Render backend URL
+            this.socket = io('https://forex-charting-backend-zl1y.onrender.com');
             
             this.socket.on('connect', () => {
                 console.log('Connected to server');
@@ -143,6 +143,13 @@ class ForexApp {
         }
     }
     
+    updatePairData(data) {
+        // This will be called when pair-specific data arrives
+        if (data.pairData) {
+            this.updateCurrentPairDisplay(data.pairData);
+        }
+    }
+    
     updateCurrentPairDisplay(pairData) {
         const rate = pairData.currentRate;
         this.elements.currentPrice.textContent = rate.toFixed(6);
@@ -191,18 +198,4 @@ class ForexApp {
     }
     
     showError(message) {
-        const errorDiv = document.createElement('div');
-        errorDiv.className = 'error';
-        errorDiv.textContent = message;
-        document.body.insertBefore(errorDiv, document.body.firstChild);
-        
-        setTimeout(() => {
-            errorDiv.remove();
-        }, 5000);
-    }
-}
-
-// Initialize app when DOM is loaded
-document.addEventListener('DOMContentLoaded', () => {
-    window.forexApp = new ForexApp();
-});
+        const error
